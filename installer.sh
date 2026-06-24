@@ -17,9 +17,9 @@ useradd -M -s /usr/sbin/nologin cctv
 cp cctv.service /etc/systemd/system/
 cp .cctv_configuration.env /srv/NVR/
 chmod 600 /srv/NVR/.cctv_configuration.env
-chown -R cctv:cctv /srv/NVR/
 cp cctv.sh /srv/NVR/
 chmod 750 /srv/NVR/cctv.sh
+chown -R cctv:cctv /srv/NVR/
 if ! grep -q "/mnt/cctv_storage" /etc/fstab; then
     echo "# NVR FSTAB ENTRY:" >> /etc/fstab
     echo "$FSTAB_ENTRY" >> /etc/fstab
