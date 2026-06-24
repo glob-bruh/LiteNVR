@@ -8,18 +8,22 @@ echo "===================================="
 echo "Installing NVR..."
 echo "===================================="
 source .cctv_configuration.env
-FSTAB_ENTRY="//${NAS_IP}/${NAS_SHARENAME} /mnt/cctv_storage cifs credentials=/srv/NVR/.cctv_configuration.env,iocharset=utf8,nofail,x-systemd.automount,x-systemd.mount-timeout=30,_netdev,uid=0,gid=0 0 0"
 apt update
 apt install cifs-utils ffmpeg -y
 mkdir -p /srv/NVR/
 mkdir -p /mnt/cctv_storage/
-useradd -M -s /usr/sbin/nologin cctv
+useradd -rMs /usr/sbin/nologin cctv
+usermod -aG video,render cctv
+CCTVUSER_UID=$(id -u cctv)
+CCTVUSER_GID=$(id -g cctv)
+FSTAB_ENTRY="//${NAS_IP}/${NAS_SHARENAME} /mnt/cctv_storage cifs credentials=/srv/NVR/.cctv_configuration.env,iocharset=utf8,nofail,x-systemd.automount,x-systemd.mount-timeout=30,_netdev,uid=${CCTVUSER_UID},gid=${CCTVUSER_GID},file_mode=0770,dir_mode=0770 0 0"
 cp cctv.service /etc/systemd/system/
 cp .cctv_configuration.env /srv/NVR/
 chmod 600 /srv/NVR/.cctv_configuration.env
 cp cctv.sh /srv/NVR/
 chmod 750 /srv/NVR/cctv.sh
 chown -R cctv:cctv /srv/NVR/
+chown -R cctv:cctv /mnt/cctv_storage/
 if ! grep -q "/mnt/cctv_storage" /etc/fstab; then
     echo "# NVR FSTAB ENTRY:" >> /etc/fstab
     echo "$FSTAB_ENTRY" >> /etc/fstab
