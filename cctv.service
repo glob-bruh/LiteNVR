@@ -1,0 +1,16 @@
+[Unit]
+Description=FFmpeg RTSP to SMB NAS Recorder
+After=network-online.target mnt-cctv_storage.mount
+Requires=network-online.target
+
+[Service]
+Type=simple
+User=root
+ExecStart=/srv/NVR/cctv.sh tape
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
