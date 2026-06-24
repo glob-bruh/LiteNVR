@@ -13,9 +13,11 @@ apt update
 apt install cifs-utils ffmpeg -y
 mkdir -p /srv/NVR/
 mkdir -p /mnt/cctv_storage/
+useradd -M -s /usr/sbin/nologin cctv
 cp cctv.service /etc/systemd/system/
 cp .cctv_configuration.env /srv/NVR/
-chmod 700 /srv/NVR/.cctv_configuration.env
+chmod 600 /srv/NVR/.cctv_configuration.env
+chown -R cctv:cctv /srv/NVR/
 cp cctv.sh /srv/NVR/
 chmod 750 /srv/NVR/cctv.sh
 if ! grep -q "/mnt/cctv_storage" /etc/fstab; then
